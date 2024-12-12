@@ -149,7 +149,7 @@ const handleSubmit = async (e) => {
           style={styles.input(errors.email)}
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value.toLowerCase())}
           placeholder="Your Email"
         />
     {errors.email && (
@@ -166,7 +166,7 @@ const handleSubmit = async (e) => {
           style={styles.input(errors.nick)}
           type="text"
           value={nick}
-          onChange={(e) => setNick(e.target.value)}
+          onChange={(e) => setNick(e.target.value.toLowerCase())}
           placeholder="Your Nick"
         />
        {errors.nick && <p style={styles.errorText}>{errors.nick}</p>}
