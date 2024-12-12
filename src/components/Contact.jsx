@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {useNavigate} from "react-router-dom";
 
 const styles = {
   pageContainer: {
@@ -53,6 +54,10 @@ const Contact = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  //navigate to home
+  const navigate = useNavigate();
+  
+
   //handling input change
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,6 +68,7 @@ const Contact = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
+    
 
     //validation
 
@@ -91,6 +97,10 @@ const Contact = () => {
       if (data.status === "success") {
         setSuccess("Message has been sent successfully!");
         setFormData({ name: "", email: "", message: "" });
+        setTimeout(() => {
+          navigate("/");
+        }, 2000); // Esperar 2 segundos antes de redirigir
+      
       } else {
         setError(
           data.message ||
