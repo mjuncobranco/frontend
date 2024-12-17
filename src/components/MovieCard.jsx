@@ -30,7 +30,7 @@ const styles = {
     fontSize: "1.2rem",
     margin: "0.5rem",
     textAlign: "center",
-    height: "3rem",
+    height: "4rem",
     overflow: "hidden",
     textOverflow: "ellipsis",
     display: "-webkit-box",
@@ -75,12 +75,14 @@ const styles = {
 
 const MovieCard = ({ movie }) => {
   //Add or remove favorite movie
-  const { favorites, toggleFavorite } = useContext(MoviesContext);
+  const { favorites } = useContext(MoviesContext);
   const navigate = useNavigate();
   console.log("movie en movie card", { movie });
   console.log("movie_id", movie._id);
 
   const isFavorite = favorites.includes(movie._id);
+  console.log(isFavorite);
+  console.log(favorites);
 
   return (
     <div style={styles.card}>
@@ -90,13 +92,13 @@ const MovieCard = ({ movie }) => {
         style={styles.image}
         onError={(e) => {
           e.target.src =
-            "https://via.placeholder.com/150x225.png?text=No+Image";
+            `https://fastly.picsum.photos/id/482/200/300.jpg?hmac=sZqH9D718kRNYORntdoWP-EehCC83NaK3M-KTWvABIg`;
         }}
       />
       <h3 style={styles.title}>{movie.title}</h3>
       <p style={styles.description}>{movie.description.slice(0, 100)}...</p>
       <div style={styles.footer}>
-        <span onClick={() => toggleFavorite(movie._id)}>
+        <span >
           <FontAwesomeIcon
             icon={isFavorite ? faSolidStar : faRegularStar} 
             style={styles.starIcon}
