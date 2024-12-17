@@ -84,31 +84,58 @@ export const AuthProvider = ({ children }) => {
         }
         setErrors(newErrors);
 
-      // Navega a login después de 3 segundos si hay errores de email o nick existentes
-      if (newErrors.email || newErrors.nick) {
-        setTimeout(() => {
-          navigate("/login");
-        }, 3000);
-      }
-      
+        // navigates to login after 3s if existing email/nick error
+        if (newErrors.email || newErrors.nick) {
+          setTimeout(() => {
+            navigate("/login");
+          }, 3000);
+        }
       }
     } catch (error) {
       console.error("An error occurred. Please try again.", error);
       setErrors({ global: "An error occurred. Please try again." });
     }
   };
+  // Function to logout
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    localStorage.removeItem("localUser");
+    setUser(null);
+
+    navigate("/login");
+  };
+
   // Load user from localStorage on initial render
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-    if (token && storedUser) {
-      const decodedUser = JSON.parse(storedUser);
+    const localUser = localStorage.getItem("localUser");
+    if (localUser) {
+      const localUserObject = JSON.parse(localUser);
+      setUser(localUserObject);
+    } else if (token) {
+      const decodedUser = decodeToken(token); // Decodifica directamente desde el token
+      console.log("Decoded User from Token:", decodedUser);
+      const decodedUserId = decodedUser.id;
+      console.log(decodedUserId);
       setUser(decodedUser);
     }
   }, []);
 
+  useEffect(() => {
+    console.log("user changed", user);
+    if (user != null) {
+      let localUserString =
+        typeof user == "string" ? user : JSON.stringify(user);
+      localStorage.setItem("localUser", localUserString);
+    }
+  }, [setUser]);
+
   return (
-    <AuthContext.Provider value={{ user, login, register, errors, setErrors }}>
+    <AuthContext.Provider
+      value={{ user, setUser, login, register, errors, setErrors, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
