@@ -7,7 +7,10 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "100vh",
+    minHeight: "100vh",
+    padding: "2rem",
+    paddingTop: "80px",
+    boxSizing: "border-box",
   },
   form: {
     backgroundColor: "#fff",
@@ -16,6 +19,7 @@ const styles = {
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
     maxWidth: "400px",
     width: "100%",
+    boxSizing: "border-box",
   },
   title: {
     fontSize: "1.8rem",
@@ -29,13 +33,19 @@ const styles = {
     margin: "0.8rem 0",
     borderRadius: "5px",
     border: isError ? "2px solid red" : "1px solid #ccc",
+    boxSizing: "border-box",
   }),
-  
+
   errorText: {
     color: "red",
     fontSize: "0.8rem",
     marginTop: "-0.5rem",
     marginBottom: "0.5rem",
+  },
+  password: {
+    listStyle: "none",
+    padding: "0",
+    marginTop: "1rem",
   },
   button: {
     width: "100%",
@@ -49,17 +59,16 @@ const styles = {
   },
   span: {
     padding: "5px",
-    marginLeft: "5px"
+    marginLeft: "5px",
   },
   link: {
     display: "block",
     textAlign: "center",
     marginTop: "1rem",
     color: "#333",
-    textDecoration: "none"
+    textDecoration: "none",
   },
 };
-
 
 const Register = () => {
   const { register, errors, setErrors } = useContext(AuthContext);
@@ -69,18 +78,17 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nick, setNick] = useState("");
- 
+
   //password validation
   const [validRequirements, setValidRequirements] = useState([]);
 
-//realtime password validator
-const passwordRequirements = [
-  { rule: "At least 8-15 characters", regex: /^.{8,15}$/ },
-  { rule: "At least one uppercase letter", regex: /[A-Z]/ },
-  { rule: "At least one number", regex: /\d/ },
-  { rule: "At least one special character (!@#$%^&*)", regex: /[!@#$%^&*]/ },
-];
-
+  //realtime password validator
+  const passwordRequirements = [
+    { rule: "At least 8-15 characters", regex: /^.{8,15}$/ },
+    { rule: "At least one uppercase letter", regex: /[A-Z]/ },
+    { rule: "At least one number", regex: /\d/ },
+    { rule: "At least one special character (!@#$%^&*)", regex: /[!@#$%^&*]/ },
+  ];
 
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
@@ -92,38 +100,38 @@ const passwordRequirements = [
     );
     setValidRequirements(validRules.map((req) => req.rule));
   };
- //validation before submitting
- const validateForm = () => {
-  const newErrors = {};
-  if (!name.trim()) newErrors.name = "Name is required.";
-  if (!surname.trim()) newErrors.surname = "Surname is required.";
-  if (!email.trim()) newErrors.email = "Email is required.";
-  if (!nick.trim()) newErrors.nick = "Nick is required.";
-  if (!password.trim()) {
-    newErrors.password = "Password is required.";
-  } else {
-    const unmetRules = passwordRequirements.filter(
-      (req) => !req.regex.test(password)
-    );
-    if (unmetRules.length > 0) {
-      newErrors.password = "Password does not meet all requirements.";
+  //validation before submitting
+  const validateForm = () => {
+    const newErrors = {};
+    if (!name.trim()) newErrors.name = "Name is required.";
+    if (!surname.trim()) newErrors.surname = "Surname is required.";
+    if (!email.trim()) newErrors.email = "Email is required.";
+    if (!nick.trim()) newErrors.nick = "Nick is required.";
+    if (!password.trim()) {
+      newErrors.password = "Password is required.";
+    } else {
+      const unmetRules = passwordRequirements.filter(
+        (req) => !req.regex.test(password)
+      );
+      if (unmetRules.length > 0) {
+        newErrors.password = "Password does not meet all requirements.";
+      }
     }
-  }
 
-  // Actualiza los errores en el contexto
-  setErrors(newErrors);
+    // updating errors on context
+    setErrors(newErrors);
 
-  return Object.keys(newErrors).length === 0;
-};
+    return Object.keys(newErrors).length === 0;
+  };
+  //submiting registration if data was validated ok
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      await register({ name, surname, email, password, nick });
+    }
+  };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (validateForm()) {
-    await register({ name, surname, email, password, nick });
-  }
-};
-
- 
+  //dinamic validation for password with colors red for error, green for success
   return (
     <div style={styles.container}>
       <form style={styles.form} onSubmit={handleSubmit}>
@@ -135,7 +143,7 @@ const handleSubmit = async (e) => {
           onChange={(e) => setName(e.target.value)}
           placeholder="Your Name"
         />
-       {errors.name && <p style={styles.errorText}>{errors.name}</p>}
+        {errors.name && <p style={styles.errorText}>{errors.name}</p>}
         <input
           style={styles.input(errors.surname)}
           type="text"
@@ -144,7 +152,7 @@ const handleSubmit = async (e) => {
           placeholder="Your Surname"
         />
         {errors.surname && <p style={styles.errorText}>{errors.surname}</p>}
-       
+
         <input
           style={styles.input(errors.email)}
           type="email"
@@ -152,10 +160,11 @@ const handleSubmit = async (e) => {
           onChange={(e) => setEmail(e.target.value.toLowerCase())}
           placeholder="Your Email"
         />
-    {errors.email && (
+        {errors.email && (
           <p style={styles.errorText}>
             {errors.email}{" "}
-            {errors.email === "Email already exists. Please try another email." && (
+            {errors.email ===
+              "Email already exists. Please try another email." && (
               <Link to="/login" style={{ color: "blue" }}>
                 Login here
               </Link>
@@ -169,7 +178,7 @@ const handleSubmit = async (e) => {
           onChange={(e) => setNick(e.target.value.toLowerCase())}
           placeholder="Your Nick"
         />
-       {errors.nick && <p style={styles.errorText}>{errors.nick}</p>}
+        {errors.nick && <p style={styles.errorText}>{errors.nick}</p>}
         <input
           style={styles.input(errors.password)}
           type="password"
@@ -190,14 +199,17 @@ const handleSubmit = async (e) => {
                   : "red",
               }}
             >
-            
-             <span style={{color: validRequirements.includes(requirement.rule)
-                  ? "green"
-                  : "red",size:"1rem"}}>
-                    {validRequirements.includes(requirement.rule) ? "✔️" : "❌"}
-              </span> 
+              <span
+                style={{
+                  color: validRequirements.includes(requirement.rule)
+                    ? "green"
+                    : "red",
+                  size: "1rem",
+                }}
+              >
+                {validRequirements.includes(requirement.rule) ? "✔️" : "❌"}
+              </span>
               <span style={styles.span}>{requirement.rule}</span>
-
             </li>
           ))}
         </ul>
@@ -205,7 +217,7 @@ const handleSubmit = async (e) => {
         <button style={styles.button} type="submit">
           Sign up
         </button>
-
+        {/*navigating to login if existing user */}
         <Link to="/login" style={styles.link}>
           Already have an account? Login
         </Link>
