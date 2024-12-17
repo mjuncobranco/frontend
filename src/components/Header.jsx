@@ -62,7 +62,7 @@ const styles = {
     fontSize: "0.9rem",
     transition: "box-shadow 0.3s",
     width: "90%", 
-    maxWidth: "280px", // Limita el tamaño máximo
+    maxWidth: "280px", // limits max. size
   },
   searchInputActive: {
     boxShadow: "0 0 10px yellow",
@@ -100,19 +100,20 @@ const styles = {
 };
 
 const Header = () => {
-  const { user, logout } = useContext(AuthContext);
-  const {movies} = useContext(MoviesContext);
-  const [searchQuery, setSearchQuery]= useState("");
+  const { user, logout } = useContext(AuthContext);//auth user
+  const {movies} = useContext(MoviesContext);//fetch movies
+  const [searchQuery, setSearchQuery]= useState("");//query to filter movies
   const navigate = useNavigate();
- // Función para manejar el cambio en el campo de búsqueda
+ // handling input change
  const handleSearchChange = (e) => {
   setSearchQuery(e.target.value);
 };
 
-// Filtramos las películas que coinciden con el título ingresado
+// filtering movies by title
 const filteredMovies = movies.filter((movie) =>
   movie.title.toLowerCase().includes(searchQuery.toLowerCase()) // Compara el título en minúsculas
 );
+//logging out
   const handleLogout = () => {
     logout();
     navigate("/");
@@ -132,7 +133,7 @@ const filteredMovies = movies.filter((movie) =>
           value={searchQuery}
           onChange={handleSearchChange}
           />
-          {/* Mostrar el dropdown con resultados si hay texto de búsqueda */}
+          {/* showing dropdown with search result */}
         {searchQuery && (
           <div style={styles.dropdown}>
             {filteredMovies.map((movie) => (
@@ -140,7 +141,7 @@ const filteredMovies = movies.filter((movie) =>
                 key={movie._id}
                 style={styles.dropdownItem}
                 onClick={() => {navigate(`/movies/${movie._id}`);
-                setSearchQuery("");}} // Navega a los detalles de la película
+                setSearchQuery("");}} // Navigating to movieDetails
               >
                 {movie.title}
               </div>
@@ -150,12 +151,17 @@ const filteredMovies = movies.filter((movie) =>
         
       </div>
 
-      <nav style={styles.nav}>
+      <nav style={styles.nav}> {/*nav bar with avatar & logout button if user is logged in OR login/register if not*/}
         {user ? (
           <>
             <Link to="/profile">
               <img
-                src={user.avatar ? `https://fastly.picsum.photos/id/482/200/300.jpg?hmac=sZqH9D718kRNYORntdoWP-EehCC83NaK3M-KTWvABIg` : `https://fastly.picsum.photos/id/482/200/300.jpg?hmac=sZqH9D718kRNYORntdoWP-EehCC83NaK3M-KTWvABIg`}
+                src={ user.avatar ? `http://localhost:5000/image/${user.avatar}`:
+                "hmac=sZqH9D718kRNYORntdoWP-EehCC83NaK3M-KTWvABIg"
+              } onError={({currentTarget})=>{
+                currentTarget.onerror = null;
+                currentTarget.src="https://fastly.picsum.photos/id/482/200/300.jpg?hmac=sZqH9D718kRNYORntdoWP-EehCC83NaK3M-KTWvABIg"
+              }} 
                 alt="User Avatar"
                 style={styles.avatar}
               />
@@ -164,7 +170,7 @@ const filteredMovies = movies.filter((movie) =>
               Logout
             </button>
           </>
-        ) : (
+        ) : ( 
           <>
             <Link to="/login" style={styles.button}>
               Login
