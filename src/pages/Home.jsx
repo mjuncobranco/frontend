@@ -10,12 +10,26 @@ const styles = {
     padding: "1rem",
   },
   loadingContainer: {
-    textAlign: "center",
-    marginTop: "50px",
+    display: "flex",
+    alignItems: "center",
+    marginTop: "30px",
+    height: "70vh",
+    justifyContent: "center",
+  },
+  loadingText: {
+    fontSize: "1.4rem",
+    color: "green",
+    padding: "0.8rem"
+   
+  },
+  errorText: {
+    fontSize: "1.4rem",
+    color: "red",
   },
 };
 
 const Home = () => {
+  //importing from moviesContext 
   const { movies, loading, error } = useContext(MoviesContext);
 
   console.log("Home rendered", movies);
@@ -23,18 +37,22 @@ const Home = () => {
   if (loading) {
     return (
       <div style={styles.loadingContainer}>
-        <p>Loading movies...</p>
+        <span>🎬</span>
+        <p style={styles.loadingText}>Loading movies...</p>
       </div>
     );
   }
-  //error message
+  //error message when fetching movies
   if (error) {
     return (
       <div style={styles.loadingContainer}>
-        <p>Failed to load movies. Please try again later.</p>
+        <p style={styles.errorText}>
+          Failed to load movies. Please try again later.
+        </p>
       </div>
     );
   }
+  //mapping movies fetched from db rendering movieCard component
   return (
     <div style={styles.grid}>
       {movies.map((movie) => (
