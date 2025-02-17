@@ -55,7 +55,7 @@ This project is a React-based frontend developed with Vite, designed as the user
    npm run dev
    ```
 
-   The application will be available at `http://localhost:5174`.
+   The application will be available at `http://localhost:5173`.
 
 ---
 
